@@ -1,6 +1,10 @@
 # Phenological-data-download
 
 There are many different websites for phenological observation data records across various countries and regions, but it seems that no one has compiled a comprehensive list of these sites and where the data comes from. I plan to consolidate the phenological data that I have downloaded during my research.
+ <br>
+Regarding where I learned about these data... recommendations from professors and peers, references in academic papers
+ <br>
+haha... as a Ph.D. student (permanent head damage), I really hope someone could just organize all the phenological data and hand it over to me, hahahhhhhhh! oᴗOಣ
 
 ## **Europe**
 website: http://www.pep725.eu/  <br>
