@@ -4,6 +4,7 @@
 # https://github.com/cran/rnpn
 # https://github.com/genophenoenvo/NPN-Data/tree/main
 # https://github.com/usa-npn/cales-thermal-calendars/tree/main
+# https://www.usanpn.org/data/publications
 ###########################################################
 
 install.packages("rnpn")
