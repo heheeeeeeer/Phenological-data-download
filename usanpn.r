@@ -51,6 +51,7 @@ leaf <- npn_download_site_phenometrics(request_source='Heheer',
                                        pheno_class_ids = 1,
                                        climate_data = TRUE )
 write.csv(leaf, "leaf.csv", row.names = FALSE)
+
 # ***************************
 #  dim(leaf)    32151  48
 # ***************************
@@ -60,6 +61,7 @@ Ev_br_codes <- species_list %>%
   filter(functional_type == "Evergreen broadleaf")
 Evergreen_broadleaf <- npn_download_site_phenometrics(request_source = "Heheer", 
                                                       years = c(2008:2024), 
+                                                      num_days_quality_filter = "7",
                                                       functional_types = unique(Ev_br_codes$functional_type),
                                                       climate_data = TRUE )
 write.csv(Evergreen_broadleaf, "Evergreen_broadleaf.csv", row.names = FALSE)
