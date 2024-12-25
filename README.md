@@ -7,34 +7,35 @@ Regarding where I learned about these data... recommendations from professors an
 haha... as a Ph.D. student (permanent head damage), I really hope someone could just organize all the phenological data and hand it over to me, hahahhhhhhh! oᴗOಣ
 
 ## **Europe**
+**PEP725** the Pan-Europe Phenology network <br>
 website: http://www.pep725.eu/  <br>
+description: plant phenological records only  <br>
 
 ## **England**
-**Nature’s Calendar**<br>
+**Nature’s Calendar** <br>
 website: https://naturescalendar.woodlandtrust.org.uk/  <br>
 
 ## **Sweden**
-**Swedish Forest Phenology dataset**    <br>
-website: https://snd.gu.se/en/catalogue/study/2021-194
+**SFP** Swedish Forest Phenology dataset    <br>
+website: https://snd.gu.se/en/catalogue/study/2021-194 <br>
+description: plant phenological records only  <br>
 
 ## **Canada**
-**Chronicle of Nature Calendar** <br>
-thesis: https://www.nature.com/articles/s41597-020-0376-z <br>
-data: https://zenodo.org/records/3607556<br>
-<br>
-**Naturewatch - flowering times** <br>
+**Plantwatch - flowering times** <br>
 website: https://www.naturewatch.ca/plantwatch/<br>
+description: flower phenology records only  <br>
 
 ## **America**
 **USANPN** <br>
-website: https://www.usanpn.org/data/observational
+website: https://www.usanpn.org/data/observational  <br>
+data download: usanpn.r  <br>
 
 ## **Korea**
-**KMA**  <br>
+**KMA** Korea Meteorological Administration phenological network  <br>
 website: https://www.weather.go.kr/  <br>
 
 ## **Japan**
-**JMA**  <br>
+**JMA**  Japan Meteorological Agency phenological network <br>
 website: https://www.data.jma.go.jp/  <br>
 
 ## **China**
@@ -52,8 +53,17 @@ data DOI： 10.11922/sciencedb. 318   <br>
 https://www.nesdc.org.cn/sdo/detail?id=5fa53680042ebb70d0c833e5 <br>
 thesis DOI： 10.11922/csdata.2019.0043.zh     <br>
 data DOI： 10.11922/sciencedb.860   <br>
+ <br>
+**CMA** China Meteorological Administration phenological network  <br>
 
 ## **Others**
+
+**Chronicle of Nature Calendar** <br>
+**Russian Federation, Ukraine, Uzbekistan, Belarus, Kyrgyzstan**
+thesis: https://www.nature.com/articles/s41597-020-0376-z <br>
+data: https://zenodo.org/records/3607556<br>
+<br>
+
 **published literature** <br>
-**Observed Spring Phenology Responses in Experimental Environments** **(OSPREE)**  <br>
+**OSPREE**  Observed Spring Phenology Responses in Experimental Environments  <br>
 website: https://knb.ecoinformatics.org/view/doi:10.5063/F1CZ35KB
