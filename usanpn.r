@@ -58,10 +58,10 @@ write.csv(leaf, "leaf.csv", row.names = FALSE)
 # Evergreen broadleaf (but... no record output)
 Ev_br_codes <- species_list %>% 
   filter(functional_type == "Evergreen broadleaf")
-Evergreen_broadleaf <- npn_download_status_data(request_source = "Heheer", 
-                                                years = c(2008:2024), 
-                                                functional_type = unique(Ev_br_codes$functional_type),
-                                                climate_data = TRUE )
+Evergreen_broadleaf <- npn_download_site_phenometrics(request_source = "Heheer", 
+                                                      years = c(2008:2024), 
+                                                      functional_types = unique(Ev_br_codes$functional_type),
+                                                      climate_data = TRUE )
 write.csv(Evergreen_broadleaf, "Evergreen_broadleaf.csv", row.names = FALSE)
 
 # others' example (for reference)
