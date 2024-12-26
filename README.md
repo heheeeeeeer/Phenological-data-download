@@ -9,26 +9,28 @@ haha... as a Ph.D. student (permanent head damage), I really hope someone could 
 ## **Europe**
 **PEP725** the Pan-Europe Phenology network <br>
 website: http://www.pep725.eu/  <br>
-description: plant phenological records only  <br>
+- plant phenological records only  <br>
 
 ## **England**
 **Nature’s Calendar** <br>
 website: https://naturescalendar.woodlandtrust.org.uk/  <br>
+> I don't know how to download the data, I only found how to upload data, it would be great if someone could let me know how... ˃ ˄ ˂̥̥ 
 
 ## **Sweden**
 **SFP** Swedish Forest Phenology dataset    <br>
 website: https://snd.gu.se/en/catalogue/study/2021-194 <br>
-description: plant phenological records only  <br>
+- plant phenological records only  <br>
 
 ## **Canada**
 **Plantwatch - flowering times** <br>
 website: https://www.naturewatch.ca/plantwatch/<br>
-description: flower phenology records only  <br>
+- flower phenology records only  <br>
 
 ## **America**
 **USANPN** <br>
 website: https://www.usanpn.org/data/observational  <br>
-data download: see https://github.com/heheeeeeeer/Phenological-data-download/blob/main/usanpn.r  <br>
+ <br>
+**data download**: see [usanpn.r](https://github.com/heheeeeeeer/Phenological-data-download/blob/main/usanpn.r)  <br>
 
 ## **Korea**
 **KMA** Korea Meteorological Administration phenological network  <br>
@@ -59,7 +61,7 @@ data DOI： 10.11922/sciencedb.860   <br>
 ## **Others**
 
 **Chronicle of Nature Calendar** <br>
-**Russian Federation, Ukraine, Uzbekistan, Belarus, Kyrgyzstan**
+**Russian Federation, Ukraine, Uzbekistan, Belarus, Kyrgyzstan** <br>
 thesis: https://www.nature.com/articles/s41597-020-0376-z <br>
 data: https://zenodo.org/records/3607556<br>
 <br>
