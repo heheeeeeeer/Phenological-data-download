@@ -1,5 +1,6 @@
 # reference: https://github.com/bluegreen-labs/phenor/blob/5b95d79d85140fcc1ff3fbb0cc6dfb79f0f0090b/R/pr_dl_pep725.R
 
+
 # ---- 1. functions ----
 check_pep725_species <- function(species = NULL,
                                  list = FALSE){
@@ -112,6 +113,8 @@ pr_dl_pep725 <- function(
   }
 }
 
+
+
 # ---- 2. Extract tree species ----
 
 # secies list (Manually delete/modify abnormal species)
@@ -135,6 +138,8 @@ unique_sorted_species <- sort(unique(cleaned_species))
 writeLines(unique_sorted_species, con = output_file)
 cat("Species extraction and sorting complete! Results saved to:", output_file, "\n")
 
+
+
 # ---- 3. data download ----
 
 species_names <- readLines("E:/Raw_Phenological_Data/Europe_PEP725/species.txt")
@@ -143,6 +148,8 @@ for (species_name in species_names) {
   cat("Downloading data for species:", species_name, "\n")
   pr_dl_pep725(species = species_name)
 }
+
+
 
 # ---- 4. organize data ----
 
@@ -173,63 +180,58 @@ cat("All files have been consolidated into", directory, "\n")
 
 
 
-# ---- 5. data combine ----
-# combine all data to one csv file.
+# ---- 5. add treetype to data ----
+# pay attention to PEP725_BBCH.csv
 
 setwd("E:/Raw_Phenological_Data/Europe_PEP725/data")
 
-# List of expected columns
-expected_columns <- c("PEP_ID", "BBCH", "YEAR", "DAY")
+file_list <- list.files(pattern = "*.csv")
+
+output_directory <- "E:/Raw_Phenological_Data/Europe_PEP725/data_treetype_country"
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory) 
+}
+
+for (file_name in file_list) {
+
+  data <- read_csv2(file_name, col_names = TRUE)
+  
+  file_parts <- strsplit(file_name, "_")[[1]]
+  country_code <- file_parts[2]  # second part: country
+  treetype <- paste(file_parts[-(1:2)], collapse = "_")  # third part: treetype
+  treetype <- gsub("\\.csv$", "", treetype)  
+  
+  data$country <- country_code
+  data$treetype <- treetype
+  
+  write_csv(data, file.path(output_directory, file_name) )
+}
+
+
+
+# ---- 6. data combine ----
+
+setwd("E:/Raw_Phenological_Data/Europe_PEP725/data_treetype_country")
 
 file_list <- list.files(pattern = "*.csv")
 
 all_data <- data.frame()
+failed_files <- c()
 
 for (file_name in file_list) {
+
+  data <- read_csv(file_name)
   
-  data <- read.csv(file_name, sep = ";", header = TRUE)
-  
-  # Check for missing columns and add them if necessary
-  missing_cols <- setdiff(expected_columns, names(data))
-  
-  if (length(missing_cols) > 0) {
-    for (col in missing_cols) {
-      data[[col]] <- NA  # Add missing columns with NA values
-    }
-  }
-  
-  # Ensure columns are in the correct order
-  data <- data[, expected_columns]
-  
-  # Extract country code and tree type from the file name
-  file_parts <- strsplit(file_name, "_")[[1]]
-  country_code <- file_parts[2]
-  
-  # Combine all parts from the third part onwards as the tree type
-  treetype <- paste(file_parts[-(1:2)], collapse = "_")
-  
-  # Remove file extension if present
-  treetype <- gsub("\\.csv$", "", treetype)
-  
-  # Add country and tree type columns
-  data$country <- country_code
-  data$treetype <- treetype
-  
-  # Combine with the main data frame
   all_data <- rbind(all_data, data)
 }
 
-# Rename column names if needed
-colnames(all_data) <- c("PEP_ID", "BBCH", "YEAR", "DAY", "country", "treetype")
-
-write.csv(all_data, "PEP725_Raw_Combined_Data.csv", row.names = FALSE)
+write_csv(all_data, "E:/Raw_Phenological_Data/Europe_PEP725/PEP725_Raw_Combined_Data.csv")
 
 print(unique(all_data$treetype))
 
 
 
-
-# ---- 6. split by BBCH ----
+# ---- 7. split by BBCH ----
 
 bbch_groups <- split(all_data, all_data$BBCH)
 
@@ -241,3 +243,28 @@ for(bbch in names(bbch_groups)) {
   write.csv(bbch_groups[[bbch]], file_name, row.names = FALSE)
 }
 
+
+
+# ---- 8. stations combine ----
+
+setwd("E:/Raw_Phenological_Data/Europe_PEP725/stations")
+
+stations_list <- list.files(pattern = "*.csv")
+
+stations_data <- data.frame()
+
+for (file_name in stations_list) {
+  
+  data <- read_csv2(file_name)
+
+  file_parts <- strsplit(file_name, "_")[[1]]
+  country_code <- file_parts[2]
+  
+  data$country <- country_code
+  
+  stations_data <- rbind(stations_data, data)
+}
+
+write_csv(stations_data, "E:/Raw_Phenological_Data/Europe_PEP725/stations_all.csv")
+
+print(unique(stations_data$country))
