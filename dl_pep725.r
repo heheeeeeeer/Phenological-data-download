@@ -255,8 +255,8 @@ stations_data <- data.frame()
 
 for (file_name in stations_list) {
   
-  data <- read_csv2(file_name)
-
+  data <- read_delim(file_name, delim = ";")
+  
   file_parts <- strsplit(file_name, "_")[[1]]
   country_code <- file_parts[2]
   
