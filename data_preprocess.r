@@ -6,11 +6,15 @@
 # phenology_phase; treetype; genus; species; Chinese_name; common_name; notes
 ###########################################################
 
+library(data.table)
+library(readxl)
+library(dplyr)
+library(stringr)
+library(lubridate) # date process
+
 rm(list=ls())
 
 # ---- 1. PEP725_LeafUnfolding_Raw ----
-
-library(data.table)
 
 setwd("E:/Raw_Phenological_Data/Europe_PEP725")
 
@@ -47,12 +51,6 @@ fwrite(PEP725_LeafUnfolding_Raw, "E:/Raw_Phenological_Data/PEP725_LeafUnfolding_
 
 
 # ---- 2. CERN_LeafUnfolding_Raw ----
-
-library(readxl)
-library(dplyr)
-library(stringr)
-library(lubridate) # date process
-library(data.table)
 
 setwd("E:/Raw_Phenological_Data/China_CERN")
 
@@ -129,3 +127,90 @@ USAnpn_LeafUnfolding_Raw <- data.table(
 
 fwrite(USAnpn_LeafUnfolding_Raw, "E:/Raw_Phenological_Data/USAnpn_LeafUnfolding_Raw.csv")
 
+
+
+
+
+# ---- 4. SND_LeafUnfolding_Raw ----
+
+setwd("E:/Raw_Phenological_Data/Sweden_SND/")
+
+tree_phases <- read.csv("data/Tree_phases.csv")
+species_list <- read.csv("documentation/specieslist.csv")
+# Using read.csv causes encoding issues
+station_list <- read_csv("documentation/stationlist.csv")
+
+# Birches 2. Leaves unfolded, petiole visible 
+# Spruce and pine 2. Shoot is 2 cm long
+SND_filtered_data <- tree_phases %>%
+  filter(Phenophase == 2)
+
+SND_merged_data_species <- SND_filtered_data %>%
+  left_join(species_list, by = c("Species" = "ID"))
+
+SND_final_data <- SND_merged_data_species %>%
+  left_join(station_list, by = c("Station" = "station_id"))
+
+SND_LeafUnfolding_Raw <- data.frame(
+  dataset = "SND",
+  station_ID = SND_final_data$Station,
+  year = SND_final_data$Year,
+  day = SND_final_data$doy,
+  country = "Sweden",
+  longitude = SND_final_data$longitude,
+  latitude = SND_final_data$latitude,
+  altitude = SND_final_data$altitude,
+  phenology_phase = "Leaves unfolded petiole visible or Shoot is 2 cm long",
+  treetype = SND_final_data$Scientific.name,
+  genus = NA,
+  species = NA,
+  Chinese_name = NA,
+  common_name = SND_final_data$Common.name,
+  notes = NA
+)
+
+write.csv(SND_LeafUnfolding_Raw, "../SND_LeafUnfolding_Raw.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+# ---- 5. Russia_LeafUnfolding_Raw ----
+
+setwd("E:/Raw_Phenological_Data/Russia_chronicle/")
+
+tree_phases <- read_csv("phenology.csv")
+species_list <- read_csv("taxonomy.csv")
+station_list <- read_csv("studysites.csv")
+
+Russia_filtered_data <- tree_phases %>%
+  filter(eventtype == "onset of leaf unfolding")
+
+Russia_merged_data_species <- Russia_filtered_data %>%
+  left_join(species_list, by = "taxonidentifier" )
+
+Russia_final_data <- Russia_merged_data_species %>%
+  left_join(station_list, by = "studysite" )
+
+Russia_LeafUnfolding_Raw <- data.frame(
+  dataset = "CNC",
+  station_ID = Russia_final_data$studysite,
+  year = Russia_final_data$year,
+  day = Russia_final_data$dayofyear,
+  country = "Russia",
+  longitude = Russia_final_data$longitude,
+  latitude = Russia_final_data$latitude,
+  altitude = NA,
+  phenology_phase = Russia_final_data$eventtype,
+  treetype = Russia_final_data$species,
+  genus = Russia_final_data$genus ,
+  species = Russia_final_data$species,
+  Chinese_name = NA,
+  common_name = NA,
+  notes = NA
+)
+
+write.csv(Russia_LeafUnfolding_Raw, "../Russia_LeafUnfolding_Raw.csv", row.names = FALSE)
