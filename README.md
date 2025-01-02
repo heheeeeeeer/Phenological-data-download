@@ -71,4 +71,4 @@ data: https://zenodo.org/records/3607556<br>
 **published literature** <br>
 **OSPREE**  Observed Spring Phenology Responses in Experimental Environments  <br>
 website: https://knb.ecoinformatics.org/view/doi:10.5063/F1CZ35KB  <br>
-> spring phenology (e.g., budburst or leafout) of woody species in controlled environments (e.g., growth chambers)  <br>
+- spring phenology (e.g., budburst or leafout) of woody species in controlled environments (e.g., growth chambers)  <br>
