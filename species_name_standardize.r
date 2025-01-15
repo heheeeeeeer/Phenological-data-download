@@ -74,31 +74,6 @@ SND_standardized_names <- SND_standardized_names[, c("Submitted_Name", "Name_in_
                                                      "Accepted_SPNAME", "Genus_in_database", "Family")]
 write.csv(SND_standardized_names,"SND_standardized_names.csv", row.names = FALSE)
 
-
-# PEP725
-# 46 names (38.02%) that need to do fuzzy matching
-PEP725_treetype <- read.csv("PEP725_treetype.csv")
-PEP725_treetype$treetype <- gsub("[-_()]", " ", PEP725_treetype$treetype)  
-PEP725_standardized_names <- nameMatch(spList = PEP725_treetype$treetype, 
-                                        spSource = database,  
-                                        author = FALSE, 
-                                        max.distance= 1)
-PEP725_standardized_names <- PEP725_standardized_names[, c("Submitted_Name", "Name_in_database", 
-                                                     "Accepted_SPNAME", "Genus_in_database", "Family")]
-write.csv(PEP725_standardized_names,"PEP725_standardized_names.csv", row.names = FALSE)
-
-
-# CERN 
-# 52 names (15.66%) that need to do fuzzy matching
-CERN_standardized_names <- nameMatch(spList = CERN_treetype$x, 
-                                    spSource = database,  
-                                    author = FALSE, 
-                                    max.distance= 1)
-CERN_standardized_names <- CERN_standardized_names[, c("Submitted_Name", "Name_in_database", 
-                                                     "Accepted_SPNAME", "Genus_in_database", "Family")]
-write.csv(CERN_standardized_names,"CERN_standardized_names.csv", row.names = FALSE)
-
-
 # Russia
 # 20 names (5.28%) that need to do fuzzy matching
 Russia_standardized_names <- nameMatch(spList = Russia_treetype$x, 
@@ -122,27 +97,103 @@ USAnpn_standardized_names <- USAnpn_standardized_names[, c("Submitted_Name", "Na
 write.csv(USAnpn_standardized_names,"USAnpn_standardized_names.csv", row.names = FALSE)
 
 
+# PEP725
+# 46 names (38.02%) that need to do fuzzy matching
+# The matching result with nameMatch is awful, do manual matching
+PEP725_LeafUnfolding_Raw <- read.csv("PEP725_LeafUnfolding_Raw.csv", stringsAsFactors = FALSE)
+PEP725_treetype <- data.frame(treetype = unique(PEP725_LeafUnfolding_Raw$treetype))
+PEP725_treetype$Accepted_SPNAME  <-  gsub("[-_()]"," ",PEP725_treetype$treetype)
+write.csv(PEP725_treetype, "PEP725_treetype.csv", row.names = FALSE)
+# next, manual calibration
+
+PEP725_LeafUnfolding_Raw_NameUpdated <- merge(PEP725_LeafUnfolding_Raw, PEP725_treetype, 
+                                            by = "treetype", all.x = TRUE)
+write.csv(PEP725_LeafUnfolding_Raw_NameUpdated, "PEP725_LeafUnfolding_Raw_NameUpdated.csv", row.names = FALSE)
+
+# CERN 
+# 52 names (15.66%) that need to do fuzzy matching
+# The matching result with nameMatch is awful, do manual matching
+CERN_LeafUnfolding_Raw <- read.csv("CERN_LeafUnfolding_Raw.csv")
+CERN_treetype <- data.frame(treetype = unique(CERN_LeafUnfolding_Raw$treetype))
+extract_first_two_words <- function(text) {
+  words <- unlist(strsplit(text, "\\s+"))
+  paste(words[1:2], collapse = " ") }
+CERN_treetype$treetype2 <- sapply(CERN_treetype$treetype, extract_first_two_words)
+
+CERN_standardized_names <- nameMatch(spList = CERN_treetype$treetype2, 
+                                     spSource = database,  
+                                     author = FALSE, 
+                                     max.distance= 1)
+CERN_standardized_names <- read.csv("CERN_standardized_names.csv")
+merged_data <- merge(CERN_treetype, CERN_standardized_names, 
+                     by.x = "treetype2", by.y = "Submitted_Name", 
+                     all.x = TRUE)
+CERN_LeafUnfolding_Raw_NameUpdated <- merge(CERN_LeafUnfolding_Raw, merged_data, 
+                       by = "treetype", all.x = TRUE)
+
+write.csv(CERN_LeafUnfolding_Raw_NameUpdated, "CERN_LeafUnfolding_Raw_NameUpdated.csv", row.names = FALSE)
+
+
 # After performing the above operations, perform manual verification again
-# Submitted_Name = Name_in_database, Correct
+# Output inconsistent lines
+standardized_names <- CERN_standardized_names
+different_row_indices <- which(
+  (standardized_names$Submitted_Name != standardized_names$Name_in_database | 
+     is.na(standardized_names$Name_in_database)) |
+    (standardized_names$Submitted_Name != standardized_names$Accepted_SPNAME | 
+       is.na(standardized_names$Accepted_SPNAME))   )
+
+different_rows <- standardized_names[different_row_indices, ]
+different_rows_with_index <- cbind(Row_Number = different_row_indices, different_rows)
+View(different_rows_with_index)
+
+# Submitted_Name = Name_in_database = Accepted_SPNAME, Correct
 # Different, check manually in the database
-# ambiguous, replace with NA
+# Ambiguous, replace with NA
 
 
 # ---- Replace species names in the original data with calibrated species names ----
 
 setwd("E:/Raw_Phenological_Data/species_name_standardized")
+output_path <- "CERN_LeafUnfolding_Raw_NameUpdated.csv"
 
 leaf_unfolding <- read.csv("CERN_LeafUnfolding_Raw.csv", stringsAsFactors = FALSE)
+# leaf_unfolding$treetype <- gsub("_", " ", leaf_unfolding$treetype)
+
 standardized_names <- read.csv("CERN_standardized_names.csv", stringsAsFactors = FALSE)
-output_path <- "CERN_LeafUnfolding_Raw_NameUpdated.csv"
+standardized_names <- standardized_names[!duplicated(standardized_names$Submitted_Name), ]
 
 merged_data <- merge(leaf_unfolding, standardized_names, 
                      by.x = "treetype", by.y = "Submitted_Name", 
                      all.x = TRUE)
 
-merged_data$treetype <- merged_data$Name_in_database
-
-merged_data <- merged_data[, !names(merged_data) %in% "Name_in_database"]
-
 write.csv(merged_data, output_path, row.names = FALSE)
 
+
+
+# ---- Data collation and consolidation ----
+
+file_names <- list.files(pattern = "\\_LeafUnfolding_Raw_NameUpdated.csv$")
+
+for (file_name in file_names) {
+  data <- read.csv(file_name)
+  variable_name <- sub("\\_LeafUnfolding_Raw_NameUpdated.csv$","",file_name)
+  assign(variable_name, data)
+}
+
+select_and_rename <- function(data) { 
+    data %>% mutate(station_ID = as.character(station_ID)) %>%
+    select(dataset, station_ID, species = Accepted_SPNAME, year, day, 
+    country, longitude, latitude, altitude, phenology_phase) }
+
+CERN <- select_and_rename(CERN)
+PEP725 <- select_and_rename(PEP725)
+Russia <- select_and_rename(Russia)
+SND <- select_and_rename(SND)
+USAnpn <- select_and_rename(USAnpn)
+
+LeafUnfolding_Raw <- bind_rows(CERN, PEP725, Russia, SND, USAnpn)
+
+write.csv(LeafUnfolding_Raw, "LeafUnfolding_Raw.csv",row.names = FALSE)
+
+View(LeafUnfolding_Raw)
